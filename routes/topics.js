@@ -49,6 +49,8 @@ router.get('/single/:id', function(req, res, next) {
 
         var query = Topic.findOneAndUpdate(conditions, update, options);
 
+        query.select("name created -_id");
+
         query.exec(function(err, entry) {
             //next(err, entry);
 
