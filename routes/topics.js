@@ -22,10 +22,10 @@ router.post('/', function(req, res, next) {
 
     console.log(postData);
 
-    if(postData.topicName){
+    if(postData.name){
 
         var topicObject = {
-            name: postData.topicName
+            name: postData.name
         };
 
         var newTopic = new Topic(topicObject);
@@ -43,7 +43,7 @@ router.post('/', function(req, res, next) {
 
     }else{
         //if missing parameters returs error
-        res.sendStatus(422);
+        res.sendStatus(400);
     }
 
 });
@@ -63,7 +63,7 @@ router.get('/:id', function(req, res, next) {
 
         var query = Topic.findOneAndUpdate(conditions, update, options);
 
-        query.select("name created -_id");
+        query.select("name created viewCount _id");
         query.exec(function(err, topic) {
             if(err){
                 console.error(err);
@@ -73,7 +73,7 @@ router.get('/:id', function(req, res, next) {
         });
 
     }else{
-        res.sendStatus(422);
+        res.sendStatus(400);
     }
 
 });
@@ -85,10 +85,10 @@ router.put('/:id', function(req, res, next) {
     var postData = req.body;
 
     //id in the URL & post data topicName
-    if(params.id && postData.topicName){
+    if(params.id && postData.name){
 
         var conditions = {_id: params.id};
-        var update = {name: postData.topicName};
+        var update = {name: postData.name};
         var options = {new: true};
 
         var query = Topic.findOneAndUpdate(conditions, update, options);
@@ -102,7 +102,7 @@ router.put('/:id', function(req, res, next) {
         });
 
     }else{
-        res.sendStatus(422);
+        res.sendStatus(400);
     }
 
 });
@@ -130,7 +130,7 @@ router.delete('/:id', function(req, res, next) {
         });
 
     }else{
-        res.sendStatus(422);
+        res.sendStatus(400);
     }
 
 });
