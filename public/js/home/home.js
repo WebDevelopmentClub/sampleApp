@@ -52,6 +52,7 @@
                         console.log(data);
                         $mdDialog.hide();
                         showToast('Successfully saved ' + data.name);
+                        $scope.topics.push(data);
 
                     },
                     function(error){

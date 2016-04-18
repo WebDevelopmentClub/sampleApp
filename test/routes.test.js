@@ -1,5 +1,4 @@
 var expect = require('chai').expect;
-var sinon = require('sinon');
 var request = require('supertest');
 var config = require('../config');
 
