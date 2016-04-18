@@ -124,7 +124,7 @@ router.delete('/:id', function(req, res, next) {
         query.exec(function(err, topic) {
             if(err){
                 console.error(err);
-                return res.json({"error":"did not find any matching topic or wrong data to update"});
+                return res.status(500).json({"error":"did not find any matching topic or wrong data to update"});
             }
             res.json(topic);
         });
