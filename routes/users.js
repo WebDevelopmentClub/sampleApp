@@ -3,6 +3,8 @@ var router = express.Router();
 
 var User = require('../models/user').User;
 
+var cryptService = require('../utils/cryptService.js');
+
 var config = require('../config');
 
 // POST /api/users/signup
@@ -21,25 +23,30 @@ router.post('/signup', function(req, res, next) {
                 return res.status(400).json({message: 'already exists'});
             }
 
-            var userObject = {
-                email: postData.email,
-                password: postData.password
-            };
+            //Hashing password
+            cryptService.cryptPassword(postData.password, function(err, hashedPassword){
 
-            var newUser = new User(userObject);
-            newUser.save(function(err, user) {
+                var userObject = {
+                    email: postData.email,
+                    password: hashedPassword
+                };
 
-                //handle saving error
-                if(err){
-                    console.error(err);
-                    return res.status(500).json(err);
-                }
+                var newUser = new User(userObject);
+                newUser.save(function(err, user) {
 
-                console.log(user);
+                    //handle saving error
+                    if(err){
+                        console.error(err);
+                        return res.status(500).json(err);
+                    }
 
-                user.password = undefined;
+                    console.log(user);
 
-                res.json(user);
+                    user.password = undefined;
+
+                    res.json(user);
+                });
+
             });
 
         });
@@ -69,16 +76,22 @@ router.post('/login', function(req, res, next) {
             }
             console.log(user.password);
 
-            if(user.password != postData.password){
-                return res.status(401).json({message: "wrong credentials"});
-            }
+            cryptService.comparePassword(postData.password, user.password, function(err, match){
 
-            user.password = undefined;
-            var response = {
-                user: user
-            };
+                if(!match){
+                    return res.status(401).json({message: "wrong credentials"});
+                }
 
-            return res.json(response);
+                user.password = undefined;
+                var response = {
+                    user: user
+                };
+
+                // RETURN USER AND TOKEN LATER
+
+                return res.json(response);
+
+            });
 
         });
 
