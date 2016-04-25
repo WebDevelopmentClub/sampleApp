@@ -14,6 +14,8 @@ app.use(bodyParser.json());
 //ROUTES
 var topics = require('./routes/topics');
 app.use('/api/topics', topics);
+var users = require('./routes/users');
+app.use('/api/users', users);
 
 //404
 app.use(function(req, res, next) {

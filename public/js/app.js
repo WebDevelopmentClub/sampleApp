@@ -15,6 +15,14 @@
             templateUrl: '/js/topic/topic.html',
             controller: 'TopicController'
         })
+        .when('/login', {
+            templateUrl: '/js/login/login.html',
+            controller: 'LoginController',
+        })
+        .when('/signup', {
+            templateUrl: '/js/signup/signup.html',
+            controller: 'SignupController',
+        })
         .otherwise({redirectTo: '/'});
 
     }]);
