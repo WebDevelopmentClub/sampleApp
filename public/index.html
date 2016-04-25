@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="app" ng-cloak>
+<html ng-app="app" ng-controller="MainController as main" ng-cloak>
 <head>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -8,6 +8,10 @@
     <link href="stylesheets/style.css" rel="stylesheet">
 </head>
 <body layout="column">
+
+    <div>
+        <div style="float:right;" ng-if="user">{{user.email}} <md-button ng-click="logout()" class="md-raised md-primary">Logout</md-button></div>
+    </div>
 
     <!-- BEGIN page-specific content -->
     <div layout="column" ng-view></div>
@@ -27,8 +31,15 @@
 
     <script src="/js/login/login.js"></script>
     <script src="/js/signup/signup.js"></script>
-    
+    <script src="/js/main/main.js"></script>
+
+    <script src="/js/services/AuthToken.js"></script>
+
     <script src="/js/services/topics-service.js"></script>
+
+    <script src="/js/services/AuthInterceptor.js"></script>
+
+    <script src="/js/services/RouteInterceptor.js"></script>
 
 </body>
 </html>

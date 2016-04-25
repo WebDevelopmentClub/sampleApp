@@ -3,8 +3,8 @@
 
     angular
     .module('app')
-    .controller('LoginController', ['$scope', '$http',
-    function($scope, $http) {
+    .controller('LoginController', ['$scope', '$http', 'AuthToken', '$location',
+    function($scope, $http, AuthToken, $location) {
 
         $scope.login = function(user) {
 
@@ -13,6 +13,13 @@
             $http.post('/api/users/login/', user)
                 .then(function(response) {
                     console.log(response.data);
+
+                    if(response.data.token){
+                        console.log('token updated');
+                        AuthToken.setToken(response.data.token);
+                        $location.path('/');
+                    }
+
                 }, function(err) {
                     console.log(err);
                 });

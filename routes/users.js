@@ -7,6 +7,50 @@ var cryptService = require('../utils/cryptService.js');
 
 var config = require('../config');
 
+var jwt = require('jsonwebtoken');
+var expressJwt = require('express-jwt');
+var validateJwt = expressJwt({secret: config.secret});
+
+// GET /api/users/me
+router.get('/me', validateJwt, function(req, res, next) {
+
+    console.log(req.user);
+
+    //return single user data
+    User.findById(req.user.id).select('-password').exec(function(err, user) {
+        if (err) { return res.json({error: err}); }
+        if(user){
+
+            var response = {
+                user: user
+            };
+
+            // UPDATE EXPIRED TOKEN LATER
+            var timeDiffInSeconds = (new Date().getTime()/1000).toFixed() - req.user.iat;
+            if(timeDiffInSeconds > (60*60) && timeDiffInSeconds < config.token_expires){
+
+                console.log('token updated');
+                response.token = jwt.sign(
+                                    {id: user.id},
+                                    config.secret,
+                                    {expiresIn: config.token_expires}
+                                  );
+
+            }else if(timeDiffInSeconds > (60*60)){
+
+                console.log('token expired completely, delete token client side');
+                return res.status(403).send({error: 'Unauthorized'});
+
+            }
+
+            return res.json(response);
+        }
+        return res.status(401).send({error: 'Unauthorized'});
+
+    });
+
+});
+
 // POST /api/users/signup
 router.post('/signup', function(req, res, next) {
 
@@ -87,7 +131,12 @@ router.post('/login', function(req, res, next) {
                     user: user
                 };
 
-                // RETURN USER AND TOKEN LATER
+                //RETURN USER AND TOKEN
+                response.token = jwt.sign(
+                                    {id: user.id},
+                                    config.secret,
+                                    {expiresIn: config.token_expires}
+                                  );
 
                 return res.json(response);
 

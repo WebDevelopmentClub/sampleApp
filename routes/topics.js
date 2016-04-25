@@ -1,11 +1,15 @@
 var express = require('express');
 var router = express.Router();
 
+var config = require('../config');
+var expressJwt = require('express-jwt');
+var validateJwt = expressJwt({secret: config.secret});
+
 // Võtab meie skeemi, milline andmebaasi 'tabeli'/skeem välja näeb
 var Topic = require('../models/topic').Topic;
 
 // GET	/api/topics - Returns all topics
-router.get('/', function(req, res, next) {
+router.get('/', validateJwt, function(req, res, next) {
     Topic.find(function(err, topics) {
         if(err){
              console.error(err);
