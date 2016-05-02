@@ -14,7 +14,7 @@ var validateJwt = expressJwt({secret: config.secret});
 // GET /api/users/me
 router.get('/me', validateJwt, function(req, res, next) {
 
-    console.log(req.user);
+    //console.log(req.user);
 
     //return single user data
     User.findById(req.user.id).select('-password').exec(function(err, user) {

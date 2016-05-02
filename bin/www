@@ -2,6 +2,8 @@ var app = require('../app');
 var config = require('../config');
 var mongoose = require('mongoose');
 
+var socketEvents = require('../routes/sockets.js');
+
 mongoose.connect(config.db);
 
 var server = app.listen(config.port, function(){
@@ -12,5 +14,17 @@ server.on('close', function(){
     console.log('stopping app...');
     mongoose.connection.close();
 });
+
+var io = require('socket.io')(server);
+
+var socketioJwt = require("socketio-jwt");
+
+// add authorization just before connection and after require
+io.use(socketioJwt.authorize({
+    secret: config.secret,
+    handshake: true
+}));
+
+io.sockets.on('connection', socketEvents);
 
 module.exports = server;

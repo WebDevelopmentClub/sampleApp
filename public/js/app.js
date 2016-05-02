@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-    .module('app', ['ngRoute','ngResource', 'ngMaterial'])
+    .module('app', ['ngRoute','ngResource', 'ngMaterial', 'luegg.directives'])
     .config(['$routeProvider','$locationProvider','$resourceProvider', '$httpProvider',
     function($routeProvider,$locationProvider,$resourceProvider, $httpProvider) {
 
@@ -42,6 +42,15 @@
             resolve: {
                 data: ['RouteInterceptor', function(RouteInterceptor) {
                     return RouteInterceptor.checkAuth({ success_location: '/'});
+                }]
+            }
+        })
+        .when('/chat', {
+            templateUrl: '/js/chat/chat.html',
+            controller: 'ChatController',
+            resolve: {
+                data: ['RouteInterceptor', function(RouteInterceptor) {
+                    return RouteInterceptor.checkAuth({ error_location: '/login'});
                 }]
             }
         })
