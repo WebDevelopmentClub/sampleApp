@@ -2,6 +2,8 @@ module.exports = function (socket) {
 
     console.log('user '+socket.decoded_token.id+' connected to socket: ' + socket.id);
 
+    // array
+
     // listeners
     socket.on('send', function(data){
 
